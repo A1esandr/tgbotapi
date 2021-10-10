@@ -11,7 +11,7 @@ import (
 func main() {
 	token := os.Getenv("TOKEN")
 	if token == "" {
-		log.Panic("token is empty!")
+		log.Fatal("token is empty!")
 	}
 	bot := tgbotapi.New(token)
 	resp, err := bot.Auth()
