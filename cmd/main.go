@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/A1esandr/tgbotapi"
@@ -18,12 +20,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(resp)
 	if resp == nil {
-		log.Fatalf("nil response from %s", url)
+		log.Fatal("nil response from auth")
 	}
 	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("not OK response from %s", url)
+		log.Fatal("not OK response from auth")
 	}
 	defer func() {
 		closeErr := resp.Body.Close()
@@ -35,5 +36,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("error resp response body %s", err.Error())
 	}
-	fmt.Println(strng(data))
+	fmt.Println(string(data))
 }
