@@ -1,7 +1,10 @@
 package tgbotapi
 
 import (
+	"errors"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 )
 
@@ -24,4 +27,20 @@ func New(token string) Bot {
 func (b *bot) Auth() (*http.Response, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/getMe", b.token)
 	return http.Get(url)
+}
+
+func (b *bot) read(resp *http.Response) ([]byte, error) {
+	if resp == nil {
+		return nil, nil
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("not OK response from auth")
+	}
+	defer func() {
+		closeErr := resp.Body.Close()
+		if closeErr != nil {
+			log.Println("error close response body", closeErr.Error())
+		}
+	}()
+	return io.ReadAll(resp.Body)
 }
