@@ -16,7 +16,7 @@ type (
 		Token string
 	}
 	Bot interface {
-		Auth() (*http.Response, error)
+		Auth() ([]byte, error)
 	}
 )
 
@@ -24,9 +24,13 @@ func New(token string) Bot {
 	return &bot{token: token}
 }
 
-func (b *bot) Auth() (*http.Response, error) {
+func (b *bot) Auth() ([]byte, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/getMe", b.token)
-	return http.Get(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	return b.read(resp)
 }
 
 func (b *bot) read(resp *http.Response) ([]byte, error) {
