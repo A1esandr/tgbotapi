@@ -18,6 +18,15 @@ type (
 	Bot interface {
 		Auth() ([]byte, error)
 	}
+	AuthResponse struct {
+		OK     bool   `json:"ok"`
+		Result Result `json:"result"`
+	}
+	Result struct {
+		ID        int64  `json:"id"`
+		IsBot     bool   `json:"is_bot"`
+		FirstName string `json:"first_name"`
+	}
 )
 
 func New(token string) Bot {
