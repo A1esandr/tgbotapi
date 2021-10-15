@@ -1,6 +1,7 @@
 package tgbotapi
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -16,7 +17,7 @@ type (
 		Token string
 	}
 	Bot interface {
-		Auth() ([]byte, error)
+		Auth() (*AuthResponse, error)
 	}
 	AuthResponse struct {
 		OK     bool   `json:"ok"`
@@ -33,13 +34,22 @@ func New(token string) Bot {
 	return &bot{token: token}
 }
 
-func (b *bot) Auth() ([]byte, error) {
+func (b *bot) Auth() (*AuthResponse, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/getMe", b.token)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
-	return b.read(resp)
+	data, err := b.read(resp)
+	if err != nil {
+		return nil, err
+	}
+	var response AuthResponse
+	err = json.Unmarshal(data, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
 
 func (b *bot) read(resp *http.Response) ([]byte, error) {
