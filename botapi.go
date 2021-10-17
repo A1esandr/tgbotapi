@@ -17,9 +17,10 @@ type (
 		Token string
 	}
 	Bot interface {
-		Auth() (*AuthResponse, error)
+		Auth() (*GetMeResponse, error)
+		RawRequest(request string) ([]byte, error)
 	}
-	AuthResponse struct {
+	GetMeResponse struct {
 		OK     bool   `json:"ok"`
 		Result Result `json:"result"`
 	}
@@ -34,7 +35,7 @@ func New(token string) Bot {
 	return &bot{token: token}
 }
 
-func (b *bot) Auth() (*AuthResponse, error) {
+func (b *bot) Auth() (*GetMeResponse, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/getMe", b.token)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -44,12 +45,25 @@ func (b *bot) Auth() (*AuthResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	var response AuthResponse
+	var response GetMeResponse
 	err = json.Unmarshal(data, &response)
 	if err != nil {
 		return nil, err
 	}
 	return &response, nil
+}
+
+func (b *bot) RawRequest(request string) ([]byte, error) {
+	url := fmt.Sprintf("https://api.telegram.org/bot%s/%s", b.token, request)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	data, err := b.read(resp)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
 
 func (b *bot) read(resp *http.Response) ([]byte, error) {
