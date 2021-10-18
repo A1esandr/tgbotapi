@@ -22,12 +22,16 @@ type (
 	}
 	GetMeResponse struct {
 		OK     bool   `json:"ok"`
-		Result Result `json:"result"`
+		Result GetMeResult `json:"result"`
 	}
-	Result struct {
+	GetMeResult struct {
 		ID        int64  `json:"id"`
 		IsBot     bool   `json:"is_bot"`
 		FirstName string `json:"first_name"`
+		Username string `json:"username"`
+		CanJoinGroups bool `json:"can_join_groups"`
+		CanReadAllGroupMessages bool `json:"can_read_all_group_messages"`
+		SupportInlineQueries bool `json:"support_inline_queries"`
 	}
 )
 
