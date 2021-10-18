@@ -17,29 +17,40 @@ type (
 		Token string
 	}
 	Bot interface {
-		Auth() (*GetMeResponse, error)
+		GetMe() (*GetMeResponse, error)
 		RawRequest(request string) ([]byte, error)
 	}
 	GetMeResponse struct {
-		OK     bool   `json:"ok"`
+		OK     bool        `json:"ok"`
 		Result GetMeResult `json:"result"`
 	}
 	GetMeResult struct {
-		ID        int64  `json:"id"`
-		IsBot     bool   `json:"is_bot"`
-		FirstName string `json:"first_name"`
-		Username string `json:"username"`
-		CanJoinGroups bool `json:"can_join_groups"`
-		CanReadAllGroupMessages bool `json:"can_read_all_group_messages"`
-		SupportInlineQueries bool `json:"support_inline_queries"`
+		ID                      int64  `json:"id"`
+		IsBot                   bool   `json:"is_bot"`
+		FirstName               string `json:"first_name"`
+		Username                string `json:"username"`
+		CanJoinGroups           bool   `json:"can_join_groups"`
+		CanReadAllGroupMessages bool   `json:"can_read_all_group_messages"`
+		SupportInlineQueries    bool   `json:"support_inline_queries"`
 	}
 )
 
-func New(token string) Bot {
-	return &bot{token: token}
+func New(token string) (Bot, error) {
+	b := &bot{token: token}
+	resp, err := b.GetMe()
+	if err != nil {
+		return nil, err
+	}
+	if !resp.OK {
+		return nil, errors.New("not ok response from telegram api")
+	}
+	if !resp.Result.IsBot {
+		return nil, errors.New("not bot token")
+	}
+	return b, nil
 }
 
-func (b *bot) Auth() (*GetMeResponse, error) {
+func (b *bot) GetMe() (*GetMeResponse, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/getMe", b.token)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -75,7 +86,7 @@ func (b *bot) read(resp *http.Response) ([]byte, error) {
 		return nil, nil
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("not OK response from auth")
+		return nil, errors.New("not ok response from telegram api")
 	}
 	defer func() {
 		closeErr := resp.Body.Close()

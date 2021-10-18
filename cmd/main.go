@@ -13,7 +13,10 @@ func main() {
 	if token == "" {
 		log.Fatal("token is empty!")
 	}
-	bot := tgbotapi.New(token)
+	bot, err := tgbotapi.New(token)
+	if err != nil {
+		log.Fatal(err)
+	}
 	data, err := bot.RawRequest("getMe")
 	if err != nil {
 		log.Fatal(err)
