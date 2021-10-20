@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	data, err := bot.RawRequest("getMe")
+	data, err := bot.RawGetRequest("getMe")
 	if err != nil {
 		log.Fatal(err)
 	}

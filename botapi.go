@@ -18,7 +18,7 @@ type (
 	}
 	Bot interface {
 		GetMe() (*GetMeResponse, error)
-		RawRequest(request string) ([]byte, error)
+		RawGetRequest(request string) ([]byte, error)
 	}
 	GetMeResponse struct {
 		OK     bool        `json:"ok"`
@@ -68,7 +68,7 @@ func (b *bot) GetMe() (*GetMeResponse, error) {
 	return &response, nil
 }
 
-func (b *bot) RawRequest(request string) ([]byte, error) {
+func (b *bot) RawGetRequest(request string) ([]byte, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/%s", b.token, request)
 	resp, err := http.Get(url)
 	if err != nil {
