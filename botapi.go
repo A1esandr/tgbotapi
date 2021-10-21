@@ -68,6 +68,19 @@ func (b *bot) GetMe() (*GetMeResponse, error) {
 	return &response, nil
 }
 
+func (b *bot) RawPostRequest(request string, params map[string]interface{}) ([]byte, error) {
+	url := fmt.Sprintf("https://api.telegram.org/bot%s/%s", b.token, request)
+	resp, err := http.Post(url, "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+	data, err := b.read(resp)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 func (b *bot) RawGetRequest(request string) ([]byte, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/%s", b.token, request)
 	resp, err := http.Get(url)
