@@ -24,9 +24,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	data, err := bot.RawGetRequest("getMe")
+	resp, err := bot.GetMe()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(data))
+	fmt.Println(resp)
 }
