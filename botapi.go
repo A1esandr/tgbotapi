@@ -33,6 +33,9 @@ type (
 		CanReadAllGroupMessages bool   `json:"can_read_all_group_messages"`
 		SupportInlineQueries    bool   `json:"support_inline_queries"`
 	}
+	SendMessage struct {
+		ChatID int64 `json:"chat_id"`
+	}
 )
 
 func New(token string) (Bot, error) {
