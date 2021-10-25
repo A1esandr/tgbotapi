@@ -1,6 +1,7 @@
 package tgbotapi
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -34,7 +35,8 @@ type (
 		SupportInlineQueries    bool   `json:"support_inline_queries"`
 	}
 	SendMessage struct {
-		ChatID int64 `json:"chat_id"`
+		ChatID int64  `json:"chat_id"`
+		Text   string `json:"text"`
 	}
 )
 
@@ -69,6 +71,23 @@ func (b *bot) GetMe() (*GetMeResponse, error) {
 		return nil, err
 	}
 	return &response, nil
+}
+
+func (b *bot) SendMessage(request *SendMessage) ([]byte, error) {
+	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", b.token)
+	data, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := http.Post(url, "application/json", bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	respData, err := b.read(resp)
+	if err != nil {
+		return nil, err
+	}
+	return respData, nil
 }
 
 func (b *bot) RawPostRequest(request string, params map[string]interface{}) ([]byte, error) {
