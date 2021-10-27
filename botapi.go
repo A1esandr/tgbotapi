@@ -20,6 +20,7 @@ type (
 	Bot interface {
 		GetMe() (*GetMeResponse, error)
 		RawGetRequest(request string) ([]byte, error)
+		SendMessage(request *SendMessage) ([]byte, error)
 	}
 	GetMeResponse struct {
 		OK     bool        `json:"ok"`

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/A1esandr/tgbotapi"
 )
@@ -13,6 +14,7 @@ var tokenFlag = flag.String("token", "", "Bot token")
 
 func main() {
 	flag.Parse()
+	chatIDStr := os.Getenv("CHAT_ID")
 	token := os.Getenv("TOKEN")
 	if token == "" && tokenFlag != nil {
 		token = *tokenFlag
@@ -24,9 +26,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := bot.GetMe()
+	chatID, err := strconv.ParseInt(chatIDStr, 10, 64)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(resp)
+	resp, err := bot.SendMessage(&tgbotapi.SendMessage{ChatID: chatID, Text: "Hi"})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(resp))
 }
