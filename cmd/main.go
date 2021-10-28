@@ -30,7 +30,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := bot.SendMessage(&tgbotapi.SendMessage{ChatID: chatID, Text: "Hi"})
+	resp, err := bot.SendPoll(&tgbotapi.SendPoll{
+		ChatID:          chatID,
+		Question:        "How are you?",
+		Options:         []string{"Fine", "Double Fine"},
+		Type:            "quiz",
+		CorrectOptionID: 1,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

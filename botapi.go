@@ -21,6 +21,7 @@ type (
 		GetMe() (*GetMeResponse, error)
 		RawGetRequest(request string) ([]byte, error)
 		SendMessage(request *SendMessage) ([]byte, error)
+		SendPoll(request *SendPoll) ([]byte, error)
 	}
 	GetMeResponse struct {
 		OK     bool        `json:"ok"`
@@ -36,8 +37,18 @@ type (
 		SupportInlineQueries    bool   `json:"support_inline_queries"`
 	}
 	SendMessage struct {
-		ChatID int64  `json:"chat_id"`
-		Text   string `json:"text"`
+		ChatID interface{} `json:"chat_id"`
+		Text   string      `json:"text"`
+	}
+	SendPoll struct {
+		ChatID          interface{} `json:"chat_id"`
+		Question        string      `json:"question"` // Poll question, 1-300 characters
+		Options         []string    `json:"options"`  // list of answer options, 2-10 strings 1-100 characters each
+		Type            string      `json:"type"`     // “quiz” or “regular”
+		CorrectOptionID int         `json:"correct_option_id"`
+	}
+	SendMessageResponse struct {
+		OK bool `json:"ok"`
 	}
 )
 
@@ -76,6 +87,23 @@ func (b *bot) GetMe() (*GetMeResponse, error) {
 
 func (b *bot) SendMessage(request *SendMessage) ([]byte, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", b.token)
+	data, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := http.Post(url, "application/json", bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	respData, err := b.read(resp)
+	if err != nil {
+		return nil, err
+	}
+	return respData, nil
+}
+
+func (b *bot) SendPoll(request *SendPoll) ([]byte, error) {
+	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendPoll", b.token)
 	data, err := json.Marshal(request)
 	if err != nil {
 		return nil, err
