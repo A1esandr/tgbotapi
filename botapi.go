@@ -14,12 +14,10 @@ type (
 	bot struct {
 		token string
 	}
-	BotParams struct {
-		Token string
-	}
 	Bot interface {
 		GetMe() (*GetMeResponse, error)
 		RawGetRequest(request string) ([]byte, error)
+		RawPostRequest(request string, body []byte) ([]byte, error)
 		SendMessage(request *SendMessage) ([]byte, error)
 		SendPoll(request *SendPoll) ([]byte, error)
 	}
@@ -49,6 +47,13 @@ type (
 	}
 	SendMessageResponse struct {
 		OK bool `json:"ok"`
+	}
+	SendPollResponse struct {
+		OK     bool    `json:"ok"`
+		Result Message `json:"result"`
+	}
+	Message struct {
+		MessageID int64 `json:"message_id"`
 	}
 )
 
@@ -119,9 +124,9 @@ func (b *bot) SendPoll(request *SendPoll) ([]byte, error) {
 	return respData, nil
 }
 
-func (b *bot) RawPostRequest(request string, params map[string]interface{}) ([]byte, error) {
+func (b *bot) RawPostRequest(request string, body []byte) ([]byte, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/%s", b.token, request)
-	resp, err := http.Post(url, "application/json", nil)
+	resp, err := http.Post(url, "application/json", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
