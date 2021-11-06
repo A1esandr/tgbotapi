@@ -26,13 +26,13 @@ type (
 		Result GetMeResult `json:"result"`
 	}
 	GetMeResult struct {
-		ID                      int64  `json:"id"`
-		IsBot                   bool   `json:"is_bot"`
-		FirstName               string `json:"first_name"`
-		Username                string `json:"username"`
-		CanJoinGroups           bool   `json:"can_join_groups"`
-		CanReadAllGroupMessages bool   `json:"can_read_all_group_messages"`
-		SupportInlineQueries    bool   `json:"support_inline_queries"`
+		ID                      interface{} `json:"id"`
+		IsBot                   bool        `json:"is_bot"`
+		FirstName               string      `json:"first_name"`
+		Username                string      `json:"username"`
+		CanJoinGroups           bool        `json:"can_join_groups"`
+		CanReadAllGroupMessages bool        `json:"can_read_all_group_messages"`
+		SupportInlineQueries    bool        `json:"support_inline_queries"`
 	}
 	SendMessage struct {
 		ChatID interface{} `json:"chat_id"`
