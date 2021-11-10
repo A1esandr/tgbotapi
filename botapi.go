@@ -20,6 +20,7 @@ type (
 		RawPostRequest(request string, body []byte) ([]byte, error)
 		SendMessage(request *SendMessage) ([]byte, error)
 		SendPoll(request *SendPoll) ([]byte, error)
+		GetUpdates(request *GetUpdates) ([]byte, error)
 	}
 	GetMeResponse struct {
 		OK     bool        `json:"ok"`
@@ -44,6 +45,10 @@ type (
 		Options         []string    `json:"options"`  // list of answer options, 2-10 strings 1-100 characters each
 		Type            string      `json:"type"`     // “quiz” or “regular”
 		CorrectOptionID int         `json:"correct_option_id"`
+	}
+	GetUpdates struct {
+		Offset int `json:"offset"`
+		Limit   int      `json:"limit"`
 	}
 	SendMessageResponse struct {
 		OK bool `json:"ok"`
@@ -109,6 +114,23 @@ func (b *bot) SendMessage(request *SendMessage) ([]byte, error) {
 
 func (b *bot) SendPoll(request *SendPoll) ([]byte, error) {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendPoll", b.token)
+	data, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := http.Post(url, "application/json", bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	respData, err := b.read(resp)
+	if err != nil {
+		return nil, err
+	}
+	return respData, nil
+}
+
+func (b *bot) GetUpdates(request *GetUpdates) ([]byte, error) {
+	url := "https://api.telegram.org/bot" + b.token + "/getUpdates"
 	data, err := json.Marshal(request)
 	if err != nil {
 		return nil, err
