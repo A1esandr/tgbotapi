@@ -48,7 +48,7 @@ type (
 	}
 	GetUpdates struct {
 		Offset int `json:"offset"`
-		Limit   int      `json:"limit"`
+		Limit  int `json:"limit"`
 	}
 	SendMessageResponse struct {
 		OK bool `json:"ok"`
@@ -176,14 +176,15 @@ func (b *bot) read(resp *http.Response) ([]byte, error) {
 	if resp == nil {
 		return nil, nil
 	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("not ok response from telegram api")
-	}
 	defer func() {
 		closeErr := resp.Body.Close()
 		if closeErr != nil {
 			log.Println("error close response body", closeErr.Error())
 		}
 	}()
-	return io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("http code: %d, response: %s", resp.StatusCode, string(body))
+	}
+	return body, err
 }
