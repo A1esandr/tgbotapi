@@ -18,16 +18,12 @@ import (
 )
 
 func main() {
-	chatIDStr := os.Getenv("CHAT_ID") // ID of chat
+	chatID := os.Getenv("CHAT_ID")    // ID of chat
 	token := os.Getenv("TOKEN")       // Token for Telegram bot
 	if token == "" {
 		log.Fatal("token is empty!")
 	}
 	bot, err := tgbotapi.New(token)
-	if err != nil {
-		log.Fatal(err)
-	}
-	chatID, err := strconv.ParseInt(chatIDStr, 10, 64)
 	if err != nil {
 		log.Fatal(err)
 	}
