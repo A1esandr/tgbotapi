@@ -20,7 +20,7 @@ type (
 		RawPostRequest(request string, body []byte) ([]byte, error)
 		SendMessage(request *SendMessage) ([]byte, error)
 		SendPoll(request *SendPoll) ([]byte, error)
-		GetUpdates(request *GetUpdates) ([]byte, error)
+		GetUpdates(request *GetUpdates) (*GetUpdatesResponse, error)
 	}
 	GetMeResponse struct {
 		OK     bool        `json:"ok"`
@@ -49,6 +49,15 @@ type (
 	GetUpdates struct {
 		Offset int `json:"offset"`
 		Limit  int `json:"limit"`
+		Timeout int `json:"timeout"`
+	}
+	GetUpdatesResponse struct {
+		OK     bool    `json:"ok"`
+		Result Message `json:"result"`
+	}
+	Update struct {
+		UpdateID int64 `json:"update_id"`
+		ChannelPost Message `json:"channel_post"`
 	}
 	SendMessageResponse struct {
 		OK bool `json:"ok"`
@@ -59,6 +68,11 @@ type (
 	}
 	Message struct {
 		MessageID int64 `json:"message_id"`
+		Chat Chat `json:"chat"`
+	}
+	Chat struct {
+		ID int64 `json:"id"`
+		Title string `json:"title"`
 	}
 )
 
@@ -129,7 +143,7 @@ func (b *bot) SendPoll(request *SendPoll) ([]byte, error) {
 	return respData, nil
 }
 
-func (b *bot) GetUpdates(request *GetUpdates) ([]byte, error) {
+func (b *bot) GetUpdates(request *GetUpdates) (*GetUpdatesResponse, error) {
 	url := "https://api.telegram.org/bot" + b.token + "/getUpdates"
 	data, err := json.Marshal(request)
 	if err != nil {
@@ -143,7 +157,12 @@ func (b *bot) GetUpdates(request *GetUpdates) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return respData, nil
+	var response GetUpdatesResponse
+	err = json.Unmarshal(respData, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
 
 func (b *bot) RawPostRequest(request string, body []byte) ([]byte, error) {

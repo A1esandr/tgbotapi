@@ -20,9 +20,13 @@ func main() {
 	resp, err := bot.GetUpdates(&tgbotapi.GetUpdates{
 		Offset:          0,
 		Limit:        10,
+		Timeout: 1,
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(resp))
+	if resp != nil {
+		fmt.Println(resp.Result.Chat.ID)
+		fmt.Println(resp.Result.Chat.Title)
+	}
 }
