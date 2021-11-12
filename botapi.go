@@ -47,16 +47,16 @@ type (
 		CorrectOptionID int         `json:"correct_option_id"`
 	}
 	GetUpdates struct {
-		Offset int `json:"offset"`
-		Limit  int `json:"limit"`
+		Offset  int `json:"offset"`
+		Limit   int `json:"limit"`
 		Timeout int `json:"timeout"`
 	}
 	GetUpdatesResponse struct {
-		OK     bool    `json:"ok"`
-		Result Message `json:"result"`
+		OK     bool     `json:"ok"`
+		Result []Update `json:"result"`
 	}
 	Update struct {
-		UpdateID int64 `json:"update_id"`
+		UpdateID    int64   `json:"update_id"`
 		ChannelPost Message `json:"channel_post"`
 	}
 	SendMessageResponse struct {
@@ -68,10 +68,10 @@ type (
 	}
 	Message struct {
 		MessageID int64 `json:"message_id"`
-		Chat Chat `json:"chat"`
+		Chat      Chat  `json:"chat"`
 	}
 	Chat struct {
-		ID int64 `json:"id"`
+		ID    int64  `json:"id"`
 		Title string `json:"title"`
 	}
 )

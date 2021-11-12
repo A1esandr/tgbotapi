@@ -17,16 +17,29 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := bot.GetUpdates(&tgbotapi.GetUpdates{
-		Offset:          0,
-		Limit:        10,
-		Timeout: 1,
-	})
-	if err != nil {
-		log.Fatal(err)
+	offset := 0
+	for {
+		resp, err := bot.GetUpdates(&tgbotapi.GetUpdates{
+			Offset:  offset,
+			Limit:   10,
+			Timeout: 1,
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp != nil {
+			for _, upd := range resp.Result {
+				fmt.Println(upd.UpdateID)
+				fmt.Println(upd.ChannelPost.Chat.ID)
+				fmt.Println(upd.ChannelPost.Chat.Title)
+			}
+			if len(resp.Result) < 10 {
+				break
+			}
+			offset += 10
+		} else {
+			break
+		}
 	}
-	if resp != nil {
-		fmt.Println(resp.Result.Chat.ID)
-		fmt.Println(resp.Result.Chat.Title)
-	}
+	fmt.Println("finish")
 }
