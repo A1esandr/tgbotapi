@@ -14,6 +14,10 @@ type (
 	bot struct {
 		token string
 	}
+	updates struct {
+		msg chan Update
+		close chan struct{}
+	}
 	Bot interface {
 		GetMe() (*GetMeResponse, error)
 		RawGetRequest(request string) ([]byte, error)
@@ -21,6 +25,10 @@ type (
 		SendMessage(request *SendMessage) ([]byte, error)
 		SendPoll(request *SendPoll) ([]byte, error)
 		GetUpdates(request *GetUpdates) (*GetUpdatesResponse, error)
+	}
+	Updates interface {
+		Get() <-chan Update
+		Close()
 	}
 	GetMeResponse struct {
 		OK     bool        `json:"ok"`
@@ -89,6 +97,10 @@ func New(token string) (Bot, error) {
 		return nil, errors.New("not bot token")
 	}
 	return b, nil
+}
+
+func NewUpdates() Updates {
+	return &updates{}
 }
 
 func (b *bot) GetMe() (*GetMeResponse, error) {
@@ -206,4 +218,12 @@ func (b *bot) read(resp *http.Response) ([]byte, error) {
 		return nil, fmt.Errorf("http code: %d, response: %s", resp.StatusCode, string(body))
 	}
 	return body, err
+}
+
+func (u *updates) Get() <-chan Update {
+	return nil
+}
+
+func (u *updates) Close() {
+
 }
