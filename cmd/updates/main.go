@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	offset := 0
+	offset := int64(0)
 	for {
 		resp, err := bot.GetUpdates(&tgbotapi.GetUpdates{
 			Offset:  offset,
@@ -32,11 +32,13 @@ func main() {
 				fmt.Println(upd.UpdateID)
 				fmt.Println(upd.ChannelPost.Chat.ID)
 				fmt.Println(upd.ChannelPost.Chat.Title)
+				if offset < upd.UpdateID {
+					offset = upd.UpdateID + 1
+				}
 			}
 			if len(resp.Result) < 10 {
 				break
 			}
-			offset += 10
 		} else {
 			break
 		}

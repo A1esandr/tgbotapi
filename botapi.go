@@ -15,7 +15,7 @@ type (
 		token string
 	}
 	updates struct {
-		msg chan Update
+		msg   chan Update
 		close chan struct{}
 	}
 	Bot interface {
@@ -55,9 +55,9 @@ type (
 		CorrectOptionID int         `json:"correct_option_id"`
 	}
 	GetUpdates struct {
-		Offset  int `json:"offset"`
-		Limit   int `json:"limit"`
-		Timeout int `json:"timeout"`
+		Offset  int64 `json:"offset"`
+		Limit   int   `json:"limit"`
+		Timeout int   `json:"timeout"`
 	}
 	GetUpdatesResponse struct {
 		OK     bool     `json:"ok"`
