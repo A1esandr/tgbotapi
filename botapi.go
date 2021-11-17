@@ -103,8 +103,8 @@ func New(token string) (Bot, error) {
 	return b, nil
 }
 
-func NewUpdates() Updates {
-	return &updates{}
+func NewUpdates(params UpdatesParams) Updates {
+	return &updates{msg: make(chan Update, params.Limit)}
 }
 
 func (b *bot) GetMe() (*GetMeResponse, error) {
@@ -225,7 +225,7 @@ func (b *bot) read(resp *http.Response) ([]byte, error) {
 }
 
 func (u *updates) Get() <-chan Update {
-	return nil
+	return u.msg
 }
 
 func (u *updates) Close() {
