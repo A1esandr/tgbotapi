@@ -30,6 +30,10 @@ type (
 		Get() <-chan Update
 		Close()
 	}
+	UpdatesParams struct {
+		Limit   int `json:"limit"`
+		Timeout int `json:"timeout"`
+	}
 	GetMeResponse struct {
 		OK     bool        `json:"ok"`
 		Result GetMeResult `json:"result"`

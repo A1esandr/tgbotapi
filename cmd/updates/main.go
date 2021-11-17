@@ -32,7 +32,7 @@ func main() {
 				fmt.Println(upd.UpdateID)
 				fmt.Println(upd.ChannelPost.Chat.ID)
 				fmt.Println(upd.ChannelPost.Chat.Title)
-				if offset < upd.UpdateID {
+				if offset <= upd.UpdateID {
 					offset = upd.UpdateID + 1
 				}
 			}
