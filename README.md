@@ -5,6 +5,8 @@ Telegram bot API
 * Go 1.17
 
 ### Example
+examples can be found in ```cmd``` folder
+
 ```
 package main
 
