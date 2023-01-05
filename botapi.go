@@ -70,6 +70,7 @@ type (
 	Update struct {
 		UpdateID    int64   `json:"update_id"`
 		ChannelPost Message `json:"channel_post"`
+		Message     Message `json:"message"`
 	}
 	SendMessageResponse struct {
 		OK bool `json:"ok"`
@@ -81,6 +82,7 @@ type (
 	Message struct {
 		MessageID int64 `json:"message_id"`
 		Chat      Chat  `json:"chat"`
+		Date      int64 `json:"date"`
 	}
 	Chat struct {
 		ID    int64  `json:"id"`
